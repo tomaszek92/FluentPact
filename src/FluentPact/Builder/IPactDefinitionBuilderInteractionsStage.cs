@@ -4,6 +4,6 @@ namespace FluentPact.Builder;
 
 public interface IPactDefinitionBuilderInteractionsStage
 {
-    IPactDefinitionBuilderInteractionsStage WithInteraction(Action<IPactDefinitionInteractionBuilder> interaction);    
+    IPactDefinitionBuilderInteractionsStage WithInteraction(Action<IPactDefinitionInteractionBuilderGivenStage> interaction);    
     IPactDefinitionBuilderFinalStage PublishAsFile(string path);
 }

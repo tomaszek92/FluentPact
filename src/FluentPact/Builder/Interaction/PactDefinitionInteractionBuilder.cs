@@ -5,26 +5,26 @@ using FluentPact.Definitions;
 namespace FluentPact.Builder.Interaction;
 
 internal class PactDefinitionInteractionBuilder :
-    IPactDefinitionInteractionBuilder,
-    IPactDefinitionInteractionUponReceivingStage,
-    IPactDefinitionInteractionWithStage,
-    IPactDefinitionInteractionWillRespondWithStage
+    IPactDefinitionInteractionBuilderGivenStage,
+    IPactDefinitionInteractionBuilderUponReceivingStage,
+    IPactDefinitionInteractionBuilderWithStage,
+    IPactDefinitionInteractionBuilderWillRespondWithStage
 {
     private readonly PactDefinitionInteraction _interaction = new();
     
-    public IPactDefinitionInteractionUponReceivingStage Given(string state)
+    public IPactDefinitionInteractionBuilderUponReceivingStage Given(string state)
     {
         _interaction.State = state;
         return this;
     }
 
-    public IPactDefinitionInteractionWithStage UponReceiving(string description)
+    public IPactDefinitionInteractionBuilderWithStage UponReceiving(string description)
     {
         _interaction.Description = description;
         return this;
     }
 
-    public IPactDefinitionInteractionWillRespondWithStage With(Action<IPactDefinitionInteractionRequestBuilder> action)
+    public IPactDefinitionInteractionBuilderWillRespondWithStage With(Action<IPactDefinitionInteractionRequestBuilder> action)
     {
         var builder = new PactDefinitionInteractionRequestBuilder();
         action(builder);

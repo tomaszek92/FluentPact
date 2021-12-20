@@ -45,7 +45,7 @@ public class PactDefinitionBuilder :
         return this;
     }
 
-    public IPactDefinitionBuilderInteractionsStage WithInteraction(Action<IPactDefinitionInteractionBuilder> action)
+    public IPactDefinitionBuilderInteractionsStage WithInteraction(Action<IPactDefinitionInteractionBuilderGivenStage> action)
     {
         var builder = new PactDefinitionInteractionBuilder();
         action(builder);
