@@ -11,12 +11,9 @@ public class PactDefinitionBuilder :
     IPactDefinitionBuilderInteractionsStage,
     IPactDefinitionBuilderFinalStage
 {
-    private PactDefinitionOptions? _options;
-    private string? _provider;
-    private string? _consumer;
-    private List<PactDefinitionInteraction> _interactions = new();
     private IPublisher? _publisher;
-
+    private readonly PactDefinition _pactDefinition = new();
+    
     private PactDefinitionBuilder()
     {
     }
@@ -29,7 +26,7 @@ public class PactDefinitionBuilder :
     
     public IPactDefinitionBuilderConsumerStage WithOptions(bool ignoreCasing, bool ignoreContractValues)
     {
-        _options = new PactDefinitionOptions
+        _pactDefinition.Options = new PactDefinitionOptions
         {
             IgnoreCasing = ignoreCasing, IgnoreContractValues = ignoreContractValues
         };
@@ -38,13 +35,13 @@ public class PactDefinitionBuilder :
 
     public IPactDefinitionBuilderProviderStage WithConsumer(string consumer)
     {
-        _consumer = consumer;
+        _pactDefinition.Consumer = new PactDefinitionConsumer { Name = consumer };
         return this;
     }
 
     public IPactDefinitionBuilderInteractionsStage WithProvider(string provider)
     {
-        _provider = provider;
+        _pactDefinition.Provider = new PactDefinitionProvider { Name = provider };
         return this;
     }
 
@@ -53,7 +50,7 @@ public class PactDefinitionBuilder :
         var builder = new PactDefinitionInteractionBuilder();
         action(builder);
         var interaction = builder.Build();
-        _interactions.Add(interaction);
+        _pactDefinition.Interactions.Add(interaction);
         return this;
     }
 
@@ -65,39 +62,11 @@ public class PactDefinitionBuilder :
 
     public async Task BuildAsync(CancellationToken cancellationToken = default)
     {
-        if (_options is null)
-        {
-            throw new NullReferenceException("options");
-        }
-
-        if (_consumer is null)
-        {
-            throw new NullReferenceException("consumer");
-        }
-
-        if (_provider is null)
+        if (_publisher is null)
         {
             throw new NullReferenceException("provider");
         }
-
-        if (!_interactions.Any())
-        {
-            throw new NullReferenceException("interactions");
-        }
-
-        if (_publisher is null)
-        {
-            throw new NullReferenceException("publisher");
-        }
-
-        PactDefinition pactDefinition = new()
-        {
-            Options = _options,
-            Consumer = new PactDefinitionConsumer { Name = _consumer },
-            Provider = new PactDefinitionProvider { Name = _provider },
-            Interactions = _interactions
-        };
-
-        await _publisher.PublishAsync(_consumer, _provider, pactDefinition, cancellationToken);
+        
+        await _publisher.PublishAsync(_pactDefinition, cancellationToken);
     }
 }

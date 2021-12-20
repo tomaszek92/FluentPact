@@ -94,7 +94,8 @@ public class PactDefinitionBuilderTests
         };
         
         var json = await File.ReadAllTextAsync(Path.Combine(outputPath, "test_provider-test_consumer.json"));
-        var pactDefinition = JsonSerializer.Deserialize<PactDefinition>(json);
+        var jsonSerializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        var pactDefinition = JsonSerializer.Deserialize<PactDefinition>(json, jsonSerializerOptions);
         pactDefinition.Should().BeEquivalentTo(expected);
     }
 }

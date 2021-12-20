@@ -15,8 +15,6 @@ internal class FilePublisher : IPublisher
     }
 
     public async Task PublishAsync(
-        string consumer,
-        string provider,
         PactDefinition pactDefinition,
         CancellationToken cancellationToken = default)
     {
@@ -25,7 +23,7 @@ internal class FilePublisher : IPublisher
 
         await using var file = File.CreateText(filePath);
         var json = JsonSerializer.Serialize(pactDefinition, _jsonSerializerOptions);
-        await file.WriteAsync(json);
+        await file.WriteAsync(json.AsMemory(), cancellationToken);
     }
 
     private static string GetPactFilePath(PactDefinition definition, string localPath) =>
