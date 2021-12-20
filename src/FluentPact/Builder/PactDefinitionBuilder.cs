@@ -1,4 +1,5 @@
-﻿using FluentPact.Definitions;
+﻿using FluentPact.Builder.Interaction;
+using FluentPact.Definitions;
 using FluentPact.Publishers;
 
 namespace FluentPact.Builder;
@@ -8,18 +9,30 @@ public class PactDefinitionBuilder :
     IPactDefinitionBuilderConsumerStage,
     IPactDefinitionBuilderProviderStage,
     IPactDefinitionBuilderInteractionsStage,
-    IPactDefinitionBuilderPublishStage,
     IPactDefinitionBuilderFinalStage
 {
     private PactDefinitionOptions? _options;
     private string? _provider;
     private string? _consumer;
-    private IEnumerable<PactDefinitionInteraction>? _interactions;
+    private List<PactDefinitionInteraction> _interactions = new();
     private IPublisher? _publisher;
 
-    public IPactDefinitionBuilderConsumerStage WithOptions(PactDefinitionOptions options)
+    private PactDefinitionBuilder()
     {
-        _options = options;
+    }
+
+    public static IPactDefinitionBuilderOptionsStage Create()
+    {
+        PactDefinitionBuilder builder = new();
+        return builder;
+    }
+    
+    public IPactDefinitionBuilderConsumerStage WithOptions(bool ignoreCasing, bool ignoreContractValues)
+    {
+        _options = new PactDefinitionOptions
+        {
+            IgnoreCasing = ignoreCasing, IgnoreContractValues = ignoreContractValues
+        };
         return this;
     }
 
@@ -35,9 +48,12 @@ public class PactDefinitionBuilder :
         return this;
     }
 
-    public IPactDefinitionBuilderPublishStage WithInteractions(IEnumerable<PactDefinitionInteraction> interactions)
+    public IPactDefinitionBuilderInteractionsStage WithInteraction(Action<IPactDefinitionInteractionBuilder> action)
     {
-        _interactions = interactions;
+        var builder = new PactDefinitionInteractionBuilder();
+        action(builder);
+        var interaction = builder.Build();
+        _interactions.Add(interaction);
         return this;
     }
 
@@ -64,7 +80,7 @@ public class PactDefinitionBuilder :
             throw new NullReferenceException("provider");
         }
 
-        if (_interactions is null)
+        if (!_interactions.Any())
         {
             throw new NullReferenceException("interactions");
         }

@@ -7,6 +7,8 @@ internal class FilePublisher : IPublisher
 {
     private readonly string _path;
 
+    private readonly JsonSerializerOptions _jsonSerializerOptions =
+        new() { WriteIndented = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     public FilePublisher(string path)
     {
         _path = path;
@@ -22,10 +24,10 @@ internal class FilePublisher : IPublisher
         var filePath = GetPactFilePath(pactDefinition, _path);
 
         await using var file = File.CreateText(filePath);
-        var json = JsonSerializer.Serialize(pactDefinition, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(pactDefinition, _jsonSerializerOptions);
         await file.WriteAsync(json);
     }
-    
-    private static string GetPactFilePath(PactDefinition definition, string localPath)
-        => $"{localPath}/{definition.Provider.Name}-{definition.Consumer.Name}.json";
+
+    private static string GetPactFilePath(PactDefinition definition, string localPath) =>
+        $"{localPath}/{definition.Provider.Name}-{definition.Consumer.Name}.json";
 }
