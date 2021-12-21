@@ -5,47 +5,48 @@ using FluentPact.Publishers;
 namespace FluentPact.Builder;
 
 public class PactDefinitionBuilder :
-    IPactDefinitionBuilderOptionsStage,
-    IPactDefinitionBuilderConsumerStage,
-    IPactDefinitionBuilderProviderStage,
-    IPactDefinitionBuilderInteractionsStage,
-    IPactDefinitionBuilderFinalStage
+    IPactDefinitionBuilder.IOptionsStage,
+    IPactDefinitionBuilder.IConsumerStage,
+    IPactDefinitionBuilder.IProviderStage,
+    IPactDefinitionBuilder.IInteractionsStage,
+    IPactDefinitionBuilder.IFinalStage
 {
     private IPublisher? _publisher;
     private readonly PactDefinition _pactDefinition = new();
-    
+
     private PactDefinitionBuilder()
     {
     }
 
-    public static IPactDefinitionBuilderOptionsStage Create()
+    public static IPactDefinitionBuilder.IOptionsStage Create()
     {
         PactDefinitionBuilder builder = new();
         return builder;
     }
-    
-    public IPactDefinitionBuilderConsumerStage WithOptions(bool ignoreCasing, bool ignoreContractValues)
+
+    public IPactDefinitionBuilder.IConsumerStage WithOptions(bool ignoreCasing, bool ignoreContractValues)
     {
         _pactDefinition.Options = new PactDefinitionOptions
         {
-            IgnoreCasing = ignoreCasing, IgnoreContractValues = ignoreContractValues
+            IgnoreCasing = ignoreCasing,
+            IgnoreContractValues = ignoreContractValues
         };
         return this;
     }
 
-    public IPactDefinitionBuilderProviderStage WithConsumer(string consumer)
+    public IPactDefinitionBuilder.IProviderStage WithConsumer(string consumer)
     {
         _pactDefinition.Consumer = new PactDefinitionConsumer { Name = consumer };
         return this;
     }
 
-    public IPactDefinitionBuilderInteractionsStage WithProvider(string provider)
+    public IPactDefinitionBuilder.IInteractionsStage WithProvider(string provider)
     {
         _pactDefinition.Provider = new PactDefinitionProvider { Name = provider };
         return this;
     }
 
-    public IPactDefinitionBuilderInteractionsStage WithInteraction(Action<IPactDefinitionInteractionBuilderGivenStage> action)
+    public IPactDefinitionBuilder.IInteractionsStage WithInteraction(Action<IPactDefinitionInteractionBuilder.IGivenStage> action)
     {
         var builder = new PactDefinitionInteractionBuilder();
         action(builder);
@@ -54,7 +55,7 @@ public class PactDefinitionBuilder :
         return this;
     }
 
-    public IPactDefinitionBuilderFinalStage PublishAsFile(string path)
+    public IPactDefinitionBuilder.IFinalStage PublishAsFile(string path)
     {
         _publisher = new FilePublisher(path);
         return this;
@@ -66,7 +67,7 @@ public class PactDefinitionBuilder :
         {
             throw new NullReferenceException("provider");
         }
-        
+
         await _publisher.PublishAsync(_pactDefinition, cancellationToken);
     }
 }
