@@ -2,12 +2,12 @@
 
 namespace FluentPact.Helpers;
 
-internal static class JsonHelper
+public static class JsonHelper
 {
     private static readonly JsonSerializerOptions _options = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
     public static string Serialize<T>(T value) =>
-        JsonSerializer.Serialize(value);
+        JsonSerializer.Serialize(value, _options);
 
     public static T Deserialize<T>(string json) =>
         JsonSerializer.Deserialize<T>(json, _options) ?? throw new Exception("Deserialized to null");

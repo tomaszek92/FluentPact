@@ -94,8 +94,7 @@ public class PactDefinitionBuilderTests
         };
 
         var path = Path.Combine(outputPath, "test_provider-test_consumer.json");
-        var pactDefinition = JsonHelper.Deserialize<PactDefinition>(File.ReadAllText(path));
-        // var pactDefinition = await JsonHelper.DeserializeAsync<PactDefinition>(path);
+        var pactDefinition = await JsonHelper.DeserializeAsync<PactDefinition>(path);
 
         foreach (var interaction in pactDefinition.Interactions)
         {
