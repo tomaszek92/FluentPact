@@ -1,6 +1,6 @@
 ﻿namespace FluentPact.Definitions;
 
-internal class PactDefinitionOptions
+public class PactDefinitionOptions
 {
     public bool IgnoreCasing { get; set; }
     public bool IgnoreContractValues { get; set; }

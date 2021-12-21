@@ -6,7 +6,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F2DE7607-29C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8608CC15-C550-4EC3-8B27-D7D0059476FE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentPact.Tests.Units", "FluentPact.Tests.Units\FluentPact.Tests.Units.csproj", "{1E03A634-38EF-4311-A4B3-1C8D1B68E8C4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentPact.Tests.Units", "tests\FluentPact.Tests.Units\FluentPact.Tests.Units.csproj", "{1E03A634-38EF-4311-A4B3-1C8D1B68E8C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

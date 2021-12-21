@@ -2,7 +2,7 @@
 
 namespace FluentPact.Definitions;
 
-internal class PactDefinitionInteraction
+public class PactDefinitionInteraction
 {
     [JsonPropertyName("provider_state")]
     public string State { get; set; }

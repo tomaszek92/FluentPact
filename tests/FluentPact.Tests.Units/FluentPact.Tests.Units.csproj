@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\src\FluentPact\FluentPact.csproj" />
+      <ProjectReference Include="..\..\src\FluentPact\FluentPact.csproj" />
     </ItemGroup>
 
     <ItemGroup>
