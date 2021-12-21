@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
@@ -18,6 +19,7 @@ public class PactDefinitionBuilderTests
     {
         // Arrange
         const string outputPath = ".";
+        var jsonSerializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
         // Act
         await PactDefinitionBuilder
@@ -71,7 +73,7 @@ public class PactDefinitionBuilderTests
                         {
                             { "Content-Type", "application/json" },
                         },
-                        Body = new { firstName = "Dave", lastName = "Pumpkin", age = 25, }
+                        Body = new User("Dave", "Pumpkin", 25)
                     }
                 },
                 new()
@@ -82,7 +84,7 @@ public class PactDefinitionBuilderTests
                     {
                         Method = "POST",
                         Path = "/users",
-                        Body = new { firstName = "Alex", lastName = "Smash", age = 55, },
+                        Body = new User("Alex", "Smash",55),
                         Headers = new Dictionary<string, string>
                         {
                             { "access_token", "Bearer 4132lkhdflksayfohrqjkfhqelfig2o=" },
@@ -92,10 +94,43 @@ public class PactDefinitionBuilderTests
                 }
             }
         };
-        
-        var json = await File.ReadAllTextAsync(Path.Combine(outputPath, "test_provider-test_consumer.json"));
-        var jsonSerializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-        var pactDefinition = JsonSerializer.Deserialize<PactDefinition>(json, jsonSerializerOptions);
+
+        var path = Path.Combine(outputPath, "test_provider-test_consumer.json");
+        var pactDefinitionJson = await File.ReadAllTextAsync(path);
+        var pactDefinition = Deserialize<PactDefinition>(pactDefinitionJson);
+
+        foreach (var interaction in pactDefinition?.Interactions ?? new List<PactDefinitionInteraction>())
+        {
+            if (interaction.Request.Body is not null)
+            {
+                interaction.Request.Body = Deserialize<User>(interaction.Request.Body.ToString()!);
+            }
+
+            if (interaction.Response.Body is not null)
+            {
+                interaction.Response.Body = Deserialize<User>(interaction.Response.Body.ToString()!);
+            }
+        }
         pactDefinition.Should().BeEquivalentTo(expected);
+
+        T Deserialize<T>(string json)
+        {
+            return JsonSerializer.Deserialize<T>(json, jsonSerializerOptions) ??
+                   throw new Exception("Deserialized to null");
+        }
+    }
+
+    private class User
+    {
+        public User(string firstName, string lastName, int age)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Age = age;
+        }
+
+        public string FirstName { get; }
+        public string LastName { get; }
+        public int Age { get; }
     }
 }
