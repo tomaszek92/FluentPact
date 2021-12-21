@@ -1,0 +1,56 @@
+{
+  "consumer": {
+    "name": "test_consumer"
+  },
+  "provider": {
+    "name": "test_provider"
+  },
+  "interactions": [
+    {
+      "provider_state": "given1",
+      "description": "description 1",
+      "request": {
+        "method": "GET",
+        "path": "/users/8BB7865C-E9E4-4634-AF9D-CDA7EFDBFD0B",
+        "body": null,
+        "headers": {}
+      },
+      "response": {
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "status": 200,
+        "body": {
+          "firstName": "Dave",
+          "lastName": "Pumpkin",
+          "age": 25
+        }
+      }
+    },
+    {
+      "provider_state": "given2",
+      "description": "description 2",
+      "request": {
+        "method": "POST",
+        "path": "/users",
+        "body": {
+          "firstName": "Alex",
+          "lastName": "Smash",
+          "age": 55
+        },
+        "headers": {
+          "access_token": "Bearer 4132lkhdflksayfohrqjkfhqelfig2o="
+        }
+      },
+      "response": {
+        "headers": {},
+        "status": 201,
+        "body": null
+      }
+    }
+  ],
+  "options": {
+    "ignoreCasing": true,
+    "ignoreContractValues": true
+  }
+}

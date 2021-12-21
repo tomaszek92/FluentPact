@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentPact.Builder;
 using FluentPact.Definitions;
+using FluentPact.Helpers;
 using Xunit;
 
 namespace FluentPact.Tests.Units.Builder;
@@ -19,7 +18,6 @@ public class PactDefinitionBuilderTests
     {
         // Arrange
         const string outputPath = ".";
-        var jsonSerializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
         // Act
         await PactDefinitionBuilder
@@ -96,28 +94,21 @@ public class PactDefinitionBuilderTests
         };
 
         var path = Path.Combine(outputPath, "test_provider-test_consumer.json");
-        var pactDefinitionJson = await File.ReadAllTextAsync(path);
-        var pactDefinition = Deserialize<PactDefinition>(pactDefinitionJson);
+        var pactDefinition = await JsonHelper.DeserializeAsync<PactDefinition>(path);
 
-        foreach (var interaction in pactDefinition?.Interactions ?? new List<PactDefinitionInteraction>())
+        foreach (var interaction in pactDefinition.Interactions)
         {
             if (interaction.Request.Body is not null)
             {
-                interaction.Request.Body = Deserialize<User>(interaction.Request.Body.ToString()!);
+                interaction.Request.Body = JsonHelper.Deserialize<User>(interaction.Request.Body.ToString()!);
             }
 
             if (interaction.Response.Body is not null)
             {
-                interaction.Response.Body = Deserialize<User>(interaction.Response.Body.ToString()!);
+                interaction.Response.Body = JsonHelper.Deserialize<User>(interaction.Response.Body.ToString()!);
             }
         }
         pactDefinition.Should().BeEquivalentTo(expected);
-
-        T Deserialize<T>(string json)
-        {
-            return JsonSerializer.Deserialize<T>(json, jsonSerializerOptions) ??
-                   throw new Exception("Deserialized to null");
-        }
     }
 
     private class User

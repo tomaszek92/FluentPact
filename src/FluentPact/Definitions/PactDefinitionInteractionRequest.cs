@@ -1,6 +1,6 @@
 ﻿namespace FluentPact.Definitions;
 
-public class PactDefinitionInteractionRequest
+internal class PactDefinitionInteractionRequest
 {
     public string Method { get; set; }
     public string Path { get; set; }

@@ -25,4 +25,10 @@
       <ProjectReference Include="..\src\FluentPact\FluentPact.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Verifier\test_provider-test_consumer.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

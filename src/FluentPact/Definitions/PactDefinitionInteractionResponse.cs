@@ -1,8 +1,8 @@
-using System.Net;
+﻿using System.Net;
 
 namespace FluentPact.Definitions;
 
-public class PactDefinitionInteractionResponse
+internal class PactDefinitionInteractionResponse
 {
     public IDictionary<string, string> Headers { get; set; } = new Dictionary<string, string>();
     public HttpStatusCode Status { get; set; }
