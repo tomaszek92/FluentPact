@@ -2,7 +2,7 @@
 
 namespace FluentPact.Helpers;
 
-public static class JsonHelper
+internal static class JsonHelper
 {
     private static readonly JsonSerializerOptions _options = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 

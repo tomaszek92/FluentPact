@@ -1,6 +1,6 @@
 ﻿namespace FluentPact.Definitions;
 
-public class PactDefinitionProvider
+internal class PactDefinitionProvider
 {
     public string Name { get; init; } = string.Empty;
 }

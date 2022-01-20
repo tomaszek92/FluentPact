@@ -1,6 +1,6 @@
 ﻿namespace FluentPact.Definitions;
 
-public class PactDefinitionConsumer
+internal class PactDefinitionConsumer
 {
     public string Name { get; init; } = string.Empty;
 }

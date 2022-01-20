@@ -1,6 +1,6 @@
 ﻿namespace FluentPact.Definitions;
 
-public class PactDefinition
+internal class PactDefinition
 {
     public PactDefinitionConsumer Consumer { get; set; }
     public PactDefinitionProvider Provider { get; set; }
