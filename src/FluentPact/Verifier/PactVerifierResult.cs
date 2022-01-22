@@ -2,13 +2,13 @@
 
 public class PactVerifierResult
 {
-    public bool IsSuccessful => !Errors.Any();
-    public IEnumerable<string> Errors => _errors.AsEnumerable();
+    public bool IsSuccessful => Interactions.All(x => x.IsSuccessful);
+    public IEnumerable<PactVerifierInteractionResult> Interactions => _interactions.AsEnumerable();
 
-    private readonly List<string> _errors = new();
+    private readonly List<PactVerifierInteractionResult> _interactions = new();
 
-    public void AddError(string errorMessage)
+    public void AddInteraction(PactVerifierInteractionResult interactionResult)
     {
-        _errors.Add(errorMessage);
+        _interactions.Add(interactionResult);
     }
 }

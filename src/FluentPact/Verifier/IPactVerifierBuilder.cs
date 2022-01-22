@@ -19,6 +19,6 @@ public interface IPactVerifierBuilder
 
     public interface IFinalStage
     {
-        Task VerifyAsync(CancellationToken cancellationToken = default);
+        Task<PactVerifierResult> VerifyAsync(CancellationToken cancellationToken = default);
     }
 }

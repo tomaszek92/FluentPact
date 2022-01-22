@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using FluentAssertions;
 using FluentPact.Verifier;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Xunit;
@@ -15,13 +16,13 @@ public class PactVerifierBuilderTests : IClassFixture<WebApplicationFactory<Prog
     }
 
     [Fact]
-    public async Task Should_VerifyPactFromFile()
+    public async Task Should_VerifyPactFromFileWithoutErrors()
     {
         // Arrange
         var httpClient = _factory.CreateClient();
 
         // Act
-        await PactVerifierBuilder
+        var result = await PactVerifierBuilder
             .Create(httpClient)
             .WithConsumer("test_consumer")
             .WithProvider("test_provider")
@@ -29,5 +30,6 @@ public class PactVerifierBuilderTests : IClassFixture<WebApplicationFactory<Prog
             .VerifyAsync();
 
         // Assert
+        result.IsSuccessful.Should().BeTrue();
     }
 }

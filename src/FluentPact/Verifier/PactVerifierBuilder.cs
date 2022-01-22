@@ -42,7 +42,7 @@ public class PactVerifierBuilder :
         return this;
     }
 
-    public async Task VerifyAsync(CancellationToken cancellationToken = default)
+    public async Task<PactVerifierResult> VerifyAsync(CancellationToken cancellationToken = default)
     {
         if (_provider is null)
         {
@@ -61,11 +61,13 @@ public class PactVerifierBuilder :
 
         var pactDefinition = await _retriever.RetrieveAsync(_provider, _consumer, cancellationToken);
         var verifier = new HttpVerifier(_httpClient);
-        var result = new List<PactVerifierResult>();
+        var result = new PactVerifierResult();
         await Parallel.ForEachAsync(pactDefinition.Interactions, cancellationToken, async (interaction, token) =>
         {
-            var pactVerifierResult = await verifier.VerifyAsync(interaction, cancellationToken);
-            result.Add(pactVerifierResult);
+            var interactionResult = await verifier.VerifyAsync(interaction, token);
+            result.AddInteraction(interactionResult);
         });
+
+        return result;
     }
 }

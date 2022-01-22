@@ -12,11 +12,11 @@ internal class HttpVerifier
         _httpClient = httpClient;
     }
 
-    public async Task<PactVerifierResult> VerifyAsync(
+    public async Task<PactVerifierInteractionResult> VerifyAsync(
         PactDefinitionInteraction interaction,
         CancellationToken cancellationToken = default)
     {
-        var result = new PactVerifierResult();
+        var result = new PactVerifierInteractionResult();
         using var httpRequestMessage = GetHttpRequestMessage(interaction.Request);
         var httpResponseMessage = await _httpClient.SendAsync(httpRequestMessage, cancellationToken);
         VerifyStatusCode(interaction.Response, httpResponseMessage, result);
@@ -59,7 +59,7 @@ internal class HttpVerifier
     private static void VerifyStatusCode(
         PactDefinitionInteractionResponse interactionResponse,
         HttpResponseMessage httpResponseMessage,
-        PactVerifierResult result)
+        PactVerifierInteractionResult result)
     {
         if (httpResponseMessage.StatusCode != interactionResponse.Status)
         {
@@ -71,7 +71,7 @@ internal class HttpVerifier
     private static void VerifyHeaders(
         PactDefinitionInteractionResponse interactionResponse,
         HttpResponseMessage httpResponseMessage,
-        PactVerifierResult result)
+        PactVerifierInteractionResult result)
     {
         foreach (var (expectedKey, expectedValues) in interactionResponse.Headers)
         {
@@ -90,7 +90,7 @@ internal class HttpVerifier
     private static async Task VerifyBodyAsync(
         PactDefinitionInteractionResponse interactionResponse,
         HttpResponseMessage httpResponseMessage,
-        PactVerifierResult result,
+        PactVerifierInteractionResult result,
         CancellationToken cancellationToken = default)
     {
         if (interactionResponse.Body is null)

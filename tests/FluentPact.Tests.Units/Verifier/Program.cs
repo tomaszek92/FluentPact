@@ -14,6 +14,7 @@ app.UseStaticFiles();
 app.MapGet("/users/8BB7865C-E9E4-4634-AF9D-CDA7EFDBFD0B", async httpContext =>
 {
     var user = new User("Dave", "Pumpkin", 25);
+    httpContext.Response.Headers.Add("Example-Header", "example-VALUE");
     await httpContext.Response.WriteAsJsonAsync(user);
 });
 

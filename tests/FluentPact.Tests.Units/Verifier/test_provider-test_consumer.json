@@ -17,8 +17,8 @@
       },
       "response": {
         "headers": {
-          "Content-Type": [
-            "application/json"
+          "Example-Header": [
+            "example-VALUE"
           ]
         },
         "status": 200,
