@@ -33,15 +33,15 @@ public class PactDefinitionBuilderTests
                     .WithPath("/users/8BB7865C-E9E4-4634-AF9D-CDA7EFDBFD0B"))
                 .WillRespondWith(responseBuilder => responseBuilder
                     .WithStatus(HttpStatusCode.OK)
-                    .WithHeader("Content-Type", "application/json")
-                    .WithBody(new { firstName = "Dave", lastName = "Pumpkin", age = 25, })))
+                    .WithHeader("Content-Type", new[] { "application/json" })
+                    .WithBody(new { firstName = "Dave", lastName = "Pumpkin", age = 25 })))
             .WithInteraction(builder => builder
                 .Given("given2")
                 .UponReceiving("description 2")
                 .With(requestBuilder => requestBuilder
                     .WithMethod(HttpMethod.Post)
                     .WithPath("/users")
-                    .WithBody(new { firstName = "Alex", lastName = "Smash", age = 55, })
+                    .WithBody(new { firstName = "Alex", lastName = "Smash", age = 55 })
                     .WithHeader("access_token", "Bearer 4132lkhdflksayfohrqjkfhqelfig2o="))
                 .WillRespondWith(responseBuilder => responseBuilder
                     .WithStatus(HttpStatusCode.Created)))
@@ -51,8 +51,8 @@ public class PactDefinitionBuilderTests
         // Assert
         var expected = new PactDefinition
         {
-            Options = new PactDefinitionOptions { IgnoreCasing = true, IgnoreContractValues = true, },
-            Consumer = new PactDefinitionConsumer { Name = "test_consumer", },
+            Options = new PactDefinitionOptions { IgnoreCasing = true, IgnoreContractValues = true },
+            Consumer = new PactDefinitionConsumer { Name = "test_consumer" },
             Provider = new PactDefinitionProvider { Name = "test_provider" },
             Interactions = new List<PactDefinitionInteraction>
             {
@@ -62,17 +62,17 @@ public class PactDefinitionBuilderTests
                     Description = "description 1",
                     Request = new PactDefinitionInteractionRequest
                     {
-                        Method = "GET", Path = "/users/8BB7865C-E9E4-4634-AF9D-CDA7EFDBFD0B"
+                        Method = "GET", Path = "/users/8BB7865C-E9E4-4634-AF9D-CDA7EFDBFD0B",
                     },
                     Response = new PactDefinitionInteractionResponse
                     {
                         Status = HttpStatusCode.OK,
-                        Headers = new Dictionary<string, string>
+                        Headers = new Dictionary<string, IEnumerable<string>>
                         {
-                            { "Content-Type", "application/json" },
+                            { "Content-Type", new [] {"application/json"} },
                         },
-                        Body = new User("Dave", "Pumpkin", 25)
-                    }
+                        Body = new User("Dave", "Pumpkin", 25),
+                    },
                 },
                 new()
                 {
@@ -86,11 +86,11 @@ public class PactDefinitionBuilderTests
                         Headers = new Dictionary<string, string>
                         {
                             { "access_token", "Bearer 4132lkhdflksayfohrqjkfhqelfig2o=" },
-                        }
+                        },
                     },
-                    Response = new PactDefinitionInteractionResponse { Status = HttpStatusCode.Created }
-                }
-            }
+                    Response = new PactDefinitionInteractionResponse { Status = HttpStatusCode.Created },
+                },
+            },
         };
 
         var path = Path.Combine(outputPath, "test_provider-test_consumer.json");
@@ -109,19 +109,5 @@ public class PactDefinitionBuilderTests
             }
         }
         pactDefinition.Should().BeEquivalentTo(expected);
-    }
-
-    private class User
-    {
-        public User(string firstName, string lastName, int age)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            Age = age;
-        }
-
-        public string FirstName { get; }
-        public string LastName { get; }
-        public int Age { get; }
     }
 }

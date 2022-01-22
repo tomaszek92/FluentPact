@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using FluentPact.Definitions;
 
 namespace FluentPact.Builder.Interaction.Response;
@@ -13,7 +13,7 @@ internal class PactDefinitionInteractionResponseBuilder : IPactDefinitionInterac
         return this;
     }
 
-    public IPactDefinitionInteractionResponseBuilder WithHeader(string key, string value)
+    public IPactDefinitionInteractionResponseBuilder WithHeader(string key, IEnumerable<string> value)
     {
         _response.Headers.Add(key, value);
         return this;

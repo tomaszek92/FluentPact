@@ -8,17 +8,19 @@ public class PactVerifierBuilder :
     IPactVerifierBuilder.IRetrieveStage,
     IPactVerifierBuilder.IFinalStage
 {
+    private readonly HttpClient _httpClient;
     private string? _consumer;
     private string? _provider;
     private IRetriever? _retriever;
 
-    private PactVerifierBuilder()
+    private PactVerifierBuilder(HttpClient httpClient)
     {
+        _httpClient = httpClient;
     }
 
-    public static IPactVerifierBuilder.IConsumerStage Create()
+    public static IPactVerifierBuilder.IConsumerStage Create(HttpClient httpClient)
     {
-        PactVerifierBuilder builder = new();
+        PactVerifierBuilder builder = new(httpClient);
         return builder;
     }
 
@@ -58,6 +60,12 @@ public class PactVerifierBuilder :
         }
 
         var pactDefinition = await _retriever.RetrieveAsync(_provider, _consumer, cancellationToken);
-        // todo
+        var verifier = new HttpVerifier(_httpClient);
+        var result = new List<PactVerifierResult>();
+        await Parallel.ForEachAsync(pactDefinition.Interactions, cancellationToken, async (interaction, token) =>
+        {
+            var pactVerifierResult = await verifier.VerifyAsync(interaction, cancellationToken);
+            result.Add(pactVerifierResult);
+        });
     }
 }
